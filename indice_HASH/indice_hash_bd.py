@@ -1,21 +1,29 @@
 def h(value):
     return hash(value) % 10
 
+cont_overflow = 0
+def overflow(bucket, key, pagina):
+    global cont_overflow
+    cont_overflow += 1
+    bucket.append({"key": key,
+                   "pagina": pagina})
+    bucket.append(None)
+
+
 bucket = [[None] * 2 for _ in range(10)]
 print(bucket)
 
 def hash_bucket(key, pagina):
     i = h(key)
 
-    if bucket[i][0] == None:
-        bucket[i][0] = {"key": key,
-                        "pagina": pagina}
-    elif bucket[i][1] == None:
-        bucket[i][1] = {"key": key,
-                        "pagina": pagina}
-    else:
-        # implementar overflow aqui
-        print("overflow")
+    for j in range(len(bucket[i])):
+        if bucket[i][j] == None:
+            bucket[i][j] = {"key": key,
+                            "pagina": pagina}
+            break
+
+        elif j == len(bucket[i]) - 1:
+            overflow(bucket[i], key, pagina)
 
 n_pag = int(input())
 
@@ -43,6 +51,8 @@ for i in range(len(memoria)):
         hash_bucket(memoria[i][j], i)
 
 print(bucket)
+
+print("Overflow: ", cont_overflow, "\n")
 
 while True:
     word = input("procure por uma palavra: ")
