@@ -22,7 +22,7 @@ n_pag = int(input())
 memoria = []
 pagina = []
 
-with open('words.txt', 'r') as arquivo:
+with open('indice_HASH/words.txt', 'r') as arquivo:
     
     for linha in arquivo:
         
