@@ -1,3 +1,6 @@
+# TODO: Incluir qtd de páginas lidas
+
+
 import time
 from math import ceil
 from Database import Database
@@ -36,23 +39,75 @@ def table_search(key: str):
                 return PAGE_LIST.index(page)
     return None
 
-create_pages(100)
-create_buckets(10)
-store_keys()
 
-print(f'Colisões: {Statistics.collisions * 100/DB.get_size() :.2f}%')
-print(f'Overflow: {Statistics.overflow * 100/DB.get_size() :.2f}%')
+def execute_setup():
+    print(f'Inicializando Banco de Dados')
+    keys_pages: int = int(input('Quantas páginas? '))
+    keys_buckets: int = int(input('Quantos buckets? '))
+    create_pages(keys_pages)
+    create_buckets(keys_buckets)
+    store_keys()
+    executeCMD()
 
-START_TIME = time.time()
-print(search_key_hash('2'))
-END_TIME = time.time()
-print(f'searchkeyhash: {(END_TIME - START_TIME):.6f}')
+def executeCMD():
+    RUNNING: bool = True
+    while RUNNING:
+        
+        print(f'''Database
+Colisões: [{Statistics.collisions * 100/DB.get_size() :.2f}%]
+Overflow: [{Statistics.overflow * 100/DB.get_size() :.2f}%]
+
+
+1 - Buscar por Hash
+2 - Buscar por Table
+3 - Sair''')
+
+        menu_option: int = int(input('Selecione uma opção. '))
+        if menu_option == 1:
+            key: str = input('HASH SEARCH: Qual chave você deseja obter? ')
+            
+            START_TIME = time.time()
+            print(search_key_hash(key))
+            
+            END_TIME = time.time()
+            print(f'Tempo total do HASH SEARCH: {(END_TIME - START_TIME):.6f} ')
+            executeCMD()
+
+        elif menu_option == 2:
+            key: str = input('TABLE SEARCH: Qual chave você deseja obter? ')
+
+            START_TIME = time.time()
+            print(table_search(key))
+            
+            END_TIME = time.time()
+            print(f'Tempo total do TABLE SEARCH: {(END_TIME - START_TIME):.6f} ')
+            executeCMD()
+        
+        elif menu_option == 3:
+            RUNNING = False
+            print('Encerrando...')
+        
+execute_setup()
 
 
 
-START_TIME = time.time()
-print(table_search('2'))
-END_TIME = time.time()
-print(f'tablesearch: {(END_TIME - START_TIME) :.6f} ')
+# palavra = 'Alan'
+
+# create_pages(100)
+# create_buckets(10)
+# store_keys()
+
+# print(f'Colisões: {Statistics.collisions * 100/DB.get_size() :.2f}%')
+# print(f'Overflow: {Statistics.overflow * 100/DB.get_size() :.2f}%')
+
+# START_TIME = time.time()
+# print(search_key_hash(palavra))
+# END_TIME = time.time()
+# print(f'searchkeyhash: {(END_TIME - START_TIME):.6f}')
 
 
+
+# START_TIME = time.time()
+# print(table_search(palavra))
+# END_TIME = time.time()
+# print(f'tablesearch: {(END_TIME - START_TIME) :.6f} ')

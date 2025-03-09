@@ -1,7 +1,8 @@
 import Statistics
 
 class Bucket:
-    def __init__(self, size):
+    
+    def __init__(self, size: int):
         self.size: int = size
         self.references: dict = {}
         self.OVERFLOW = None
@@ -22,7 +23,7 @@ class Bucket:
             # Caso haja espaço
             self.references[key] = value
 
-    def get_key(self, key: str):
+    def get_key(self, key: str):  #Função Recursiva
         for k in self.references:
             if k == key:
                 return self.references[key]
