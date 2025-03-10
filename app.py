@@ -119,13 +119,48 @@ def setup():
             'collisions': f'{Statistics.collisions * 100/DB.get_size():.2f}%',
             'overflow': f'{Statistics.overflow * 100/DB.get_size():.2f}%',
             'first_page': PAGE_LIST[0] if PAGE_LIST else [],
-            'last_page': PAGE_LIST[-1] if PAGE_LIST else []
+            'last_page': PAGE_LIST[-1] if PAGE_LIST else [],
+            'total_pages': len(PAGE_LIST),
+            'total_keys': DB.get_size()
         })
     except Exception as e:
         print(f"Erro no setup: {str(e)}")
         print(f"Tipo do erro: {type(e)}")
         import traceback
         print(f"Stack trace: {traceback.format_exc()}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/pages', methods=['GET'])
+def get_pages():
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        
+        if not PAGE_LIST:
+            return jsonify({
+                'status': 'error',
+                'message': 'Sistema não inicializado'
+            }), 400
+            
+        total_pages = len(PAGE_LIST)
+        start_idx = (page - 1) * per_page
+        end_idx = min(start_idx + per_page, total_pages)
+        
+        pages = []
+        for i in range(start_idx, end_idx):
+            pages.append({
+                'page_number': i + 1,
+                'content': PAGE_LIST[i]
+            })
+            
+        return jsonify({
+            'status': 'success',
+            'current_page': page,
+            'total_pages': total_pages,
+            'per_page': per_page,
+            'pages': pages
+        })
+    except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/search', methods=['POST'])
