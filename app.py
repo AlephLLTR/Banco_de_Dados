@@ -26,6 +26,7 @@ def create_pages(keys_per_page: int):
     except Exception as e:
         print(f"Erro ao criar páginas: {str(e)}")
         raise
+    print(len(PAGE_LIST))
 
 def create_buckets(keys_per_bucket: int):
     global BUCKET_LIST
@@ -183,6 +184,11 @@ def search():
         start_time = time.time()
         table_result, pages_read = table_search(key)
         table_time = time.time() - start_time
+        
+        if hash_result is not None:
+            hash_result += 1
+        if table_result is not None:
+            table_result += 1
         
         return jsonify({
             'hash_result': hash_result,

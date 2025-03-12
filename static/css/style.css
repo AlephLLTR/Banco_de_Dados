@@ -48,6 +48,12 @@ body {
     border-color: #6c757d;
 }
 
+.btn-info {
+    background-color:#4a5f72 !important;
+    border-color: #4a5f72 !important;
+    color: white !important;
+}
+
 .btn:hover {
     opacity: 0.9;
 } 

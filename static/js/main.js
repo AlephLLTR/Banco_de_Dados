@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paginationSection = document.getElementById('paginationSection');
     const searchHashBtn = document.getElementById('searchHash');
     const searchTableBtn = document.getElementById('searchTable');
+    const searchBothBtn = document.getElementById('searchBoth');
     const searchKeyInput = document.getElementById('searchKey');
     
     // Elementos de paginação
@@ -172,9 +173,55 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('tablePage').textContent = data.table_result !== null ? data.table_result : 'Não encontrado';
             document.getElementById('tableTime').textContent = data.table_time + ' segundos';
             document.getElementById('pagesRead').textContent = data.pages_read;
+
+            const hashTime = parseFloat(data.hash_time);
+            const tableTime = parseFloat(data.table_time);
+            const timeDifference = tableTime - hashTime;
+            document.getElementById('timeDifference').textContent = timeDifference.toFixed(6) + ' segundos';
+            
         } catch (error) {
             console.error('Erro:', error);
             alert('Erro ao realizar table scan');
+        }
+    });
+    // Hash e table
+    searchBothBtn.addEventListener('click', async function() {
+        console.log('Evento Buscar Ambas disparado');
+        const key = searchKeyInput.value;
+        if (!key) {
+            alert('Por favor, insira uma chave de busca');
+            return;
+        }
+    
+        try {
+            const response = await fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ key })
+            });
+    
+            const data = await response.json();
+    
+            // Atualiza resultado da busca por Hash
+            document.getElementById('hashPage').textContent = data.hash_result !== null ? data.hash_result : 'Não encontrado';
+            document.getElementById('hashTime').textContent = data.hash_time + ' segundos';
+    
+            // Atualiza resultado da busca por Table Scan
+            document.getElementById('tablePage').textContent = data.table_result !== null ? data.table_result : 'Não encontrado';
+            document.getElementById('tableTime').textContent = data.table_time + ' segundos';
+            document.getElementById('pagesRead').textContent = data.pages_read;
+    
+            // Calcula e exibe a diferença de tempo entre as buscas
+            const hashTime = parseFloat(data.hash_time);
+            const tableTime = parseFloat(data.table_time);
+            const timeDifference = tableTime - hashTime;
+            document.getElementById('timeDifference').textContent = timeDifference.toFixed(6) + ' segundos';
+            
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao realizar a busca');
         }
     });
 }); 
